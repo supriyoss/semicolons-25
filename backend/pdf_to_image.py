@@ -2,7 +2,7 @@ from pdf2image import convert_from_path
 from os import path, makedirs
 
 
-def convert_pdf_to_images(pdf_path, output_folder, dpi=400, format='jpg'):
+def convert_pdf_to_images(pdf_path, output_folder, dpi=500, format='jpg'):
     """
        Convert a PDF file to images and save them to the specified folder.
 
@@ -39,7 +39,7 @@ def convert_pdf_to_images(pdf_path, output_folder, dpi=400, format='jpg'):
 
 
 if __name__ == "__main__":
-    pdf_file = r"E:\Semicolons\semicolons-25\sample-invoice.pdf"
-    output_dir = r"E:\Semicolons\semicolons-25\converted-images"
+    pdf_file = r"uploads/Claim_Bills.pdf"
+    output_dir = r"./resources"
 
     convert_pdf_to_images(pdf_file, output_dir)

@@ -2,12 +2,9 @@ import pinecone
 from pinecone import Pinecone
 from sentence_transformers import SentenceTransformer
 
-# Pinecone setup
-#PINECONE_API_KEY = "pcsk_42PvD3_GYZJ5WrR3jWcCwt7QLPNurtN2QcpJFCozvHvqRfDhH2mpjNnwmwRxRs26QCH8HK"
 PINECONE_ENV = "us-east-1"
 
 pc = Pinecone(api_key='pcsk_42PvD3_GYZJ5WrR3jWcCwt7QLPNurtN2QcpJFCozvHvqRfDhH2mpjNnwmwRxRs26QCH8HK')
-# api_key=os.environ.get("PINECONE_API_KEY")
 index_name = "ocr-embeddings"
 
 if index_name not in pc.list_indexes().names():

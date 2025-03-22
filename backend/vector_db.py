@@ -23,8 +23,10 @@ def get_text_embedding(text):
     return model.encode(text).tolist()
 
 
-def save_text_embedding(file_path, extracted_text):
+def save_text_embedding(unique_id, extracted_text):
     """Save extracted text and its embedding to Pinecone."""
     embedding = get_text_embedding(extracted_text)
-    index.upsert([(file_path, embedding, {"text": extracted_text})])
-    print(f"Saved embedding for: {file_path}")
+    sanitized_id = unique_id.replace("\\", "/")  # Handle Windows file paths
+
+    index.upsert([(sanitized_id, embedding, {"text": extracted_text})])
+    print(f"Saved embedding for: {sanitized_id}")

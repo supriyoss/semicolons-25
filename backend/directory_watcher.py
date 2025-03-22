@@ -1,63 +1,47 @@
-"""Python Code: Directory Listener
-This script continuously listens for newly created files (e.g., PDFs) and processes them.
-
-Install Dependencies
-pip install watchdog
-Save this as directory_watcher.py:
-"""
-import time
 import os
-import logging
-from watchdog.observers import Observer
+import time
+
 from watchdog.events import FileSystemEventHandler
-
-# Configure logging
-logging.basicConfig(
-    filename="directory_watcher.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
-
-WATCH_DIRECTORY = "/path/to/watch"  # Change this to the folder you want to monitor
+from watchdog.observers import Observer
+from pdf_processor import process_pdf_file
 
 
-class PDFHandler(FileSystemEventHandler):
-    """Handles newly created PDF files in the directory"""
-
+class UploadEventHandler(FileSystemEventHandler):
     def on_created(self, event):
-        if event.is_directory:
-            return
-
-        if event.src_path.endswith('.pdf'):
-            logging.info(f"New PDF detected: {event.src_path}")
-            self.process_pdf(event.src_path)
-
-    def process_pdf(self, pdf_path):
-        """Process the PDF file (modify this function as needed)"""
-        logging.info(f"Processing PDF: {pdf_path}")
-        # Add your PDF processing code here
+        # Check if it's a file (not a directory)
+        if not event.is_directory:
+            print(f"New file detected: {event.src_path}")
+            process_new_file(event.src_path)
 
 
-def start_watching():
-    """Starts watching the directory for changes"""
+def process_new_file(file_path):
+    """Process the new file - Placeholder function"""
+    if file_path.lower().endswith(".pdf"):
+        process_pdf_file(file_path)
+    else:
+        print("Unsupported file type. Only PDFs are processed.")
+
+
+def start_monitoring(folder_path):
+    event_handler = UploadEventHandler()
     observer = Observer()
-    event_handler = PDFHandler()
-    observer.schedule(event_handler, WATCH_DIRECTORY, recursive=False)
-
+    observer.schedule(event_handler, folder_path, recursive=False)
     observer.start()
-    logging.info("Started watching directory: " + WATCH_DIRECTORY)
-
+    print(f"Monitoring '{folder_path}' for new files...")
     try:
         while True:
-            time.sleep(1)  # Keep running
+            time.sleep(1)
     except KeyboardInterrupt:
         observer.stop()
-        logging.info("Stopped watching directory")
+
     observer.join()
 
 
 if __name__ == "__main__":
-    start_watching()
+    uploads_folder = "uploads"
+    os.makedirs(uploads_folder, exist_ok=True)  # Ensure the folder exists
+    start_monitoring(uploads_folder)
+
 """
 Running the Script as a Background Service
 
